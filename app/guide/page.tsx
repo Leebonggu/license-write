@@ -82,8 +82,8 @@ export default function GuidePage() {
                     <td className="py-2.5">특별히 강조하거나 요청할 내용</td>
                   </tr>
                   <tr className="border-b border-gray-100">
-                    <td className="py-2.5 pr-4 font-medium">본문 4 포함</td>
-                    <td className="py-2.5">혜택/추가정보 섹션 추가 (5섹션 &rarr; 6섹션)</td>
+                    <td className="py-2.5 pr-4 font-medium">본문 4 소제목</td>
+                    <td className="py-2.5">체크 시 혜택/추가정보 섹션 추가 (분야 정보 섹션에서 설정)</td>
                   </tr>
                   <tr>
                     <td className="py-2.5 pr-4 font-medium">LLM 선택</td>

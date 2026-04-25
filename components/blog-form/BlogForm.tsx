@@ -13,7 +13,6 @@ export function BlogForm() {
   const [referenceText, setReferenceText] = useState("");
   const [requiredPhrases, setRequiredPhrases] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-  const [includeSection4, setIncludeSection4] = useState(false);
   const [model, setModel] = useState<LLMModel>("claude-sonnet");
   const [section1Title, setSection1Title] = useState("");
   const [section2Title, setSection2Title] = useState("");
@@ -89,7 +88,7 @@ export function BlogForm() {
           referenceText: referenceText || undefined,
           requiredPhrases: requiredPhrases || undefined,
           additionalNotes: additionalNotes || undefined,
-          includeSection4,
+          includeSection4: !!section4Title.trim(),
           model,
           section1Title: section1Title || undefined,
           section2Title: section2Title || undefined,
@@ -126,7 +125,6 @@ export function BlogForm() {
     setReferenceText("");
     setRequiredPhrases("");
     setAdditionalNotes("");
-    setIncludeSection4(false);
     setModel("claude-sonnet");
     setSection1Title("");
     setSection2Title("");
@@ -183,7 +181,7 @@ export function BlogForm() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">본문 4 소제목 (선택)</label>
+          <label className="text-sm font-medium text-gray-700">본문 4 소제목 (입력 시 혜택/추가정보 섹션 포함)</label>
           <input
             type="text"
             value={section4Title}
@@ -249,31 +247,16 @@ export function BlogForm() {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="includeSection4"
-              checked={includeSection4}
-              onChange={(e) => setIncludeSection4(e.target.checked)}
-              className="w-4 h-4"
-            />
-            <label htmlFor="includeSection4" className="text-sm text-gray-700">
-              본문 4 포함 (혜택/추가정보 섹션)
-            </label>
-          </div>
-
-          <Select
-            label="LLM 선택"
-            value={model}
-            onChange={(e) => setModel(e.target.value as LLMModel)}
-            options={[
-              { value: "claude-sonnet", label: "Claude Sonnet (추천)" },
-              { value: "claude-haiku", label: "Claude Haiku (빠름)" },
-              { value: "gemini-flash", label: "Gemini 2.0 Flash" },
-            ]}
-          />
-        </div>
+        <Select
+          label="LLM 선택"
+          value={model}
+          onChange={(e) => setModel(e.target.value as LLMModel)}
+          options={[
+            { value: "claude-sonnet", label: "Claude Sonnet (추천)" },
+            { value: "claude-haiku", label: "Claude Haiku (빠름)" },
+            { value: "gemini-flash", label: "Gemini 2.0 Flash" },
+          ]}
+        />
       </section>
 
       {/* 생성 버튼 */}
