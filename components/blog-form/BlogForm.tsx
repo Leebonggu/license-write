@@ -15,8 +15,13 @@ export function BlogForm() {
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [includeSection4, setIncludeSection4] = useState(false);
   const [model, setModel] = useState<LLMModel>("claude-sonnet");
+  const [section1Title, setSection1Title] = useState("");
+  const [section2Title, setSection2Title] = useState("");
+  const [section3Title, setSection3Title] = useState("");
+  const [section4Title, setSection4Title] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const [result, setResult] = useState<LicenseOutput | null>(null);
   const [error, setError] = useState("");
 
@@ -32,14 +37,38 @@ export function BlogForm() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const text = await file.text();
-    setReferenceText((prev) => (prev ? prev + "\n\n---\n\n" + text : text));
+
+    if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+      setPdfLoading(true);
+      setError("");
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/parse-pdf", { method: "POST", body: formData });
+        if (!res.ok) {
+          const data = await res.json();
+          setError(data.error || "PDF 파싱에 실패했습니다.");
+          return;
+        }
+        const data = await res.json();
+        if (data.text) {
+          setReferenceText((prev) => (prev ? prev + "\n\n---\n\n" + data.text : data.text));
+        }
+      } catch {
+        setError("PDF 파싱에 실패했습니다.");
+      } finally {
+        setPdfLoading(false);
+      }
+    } else {
+      const text = await file.text();
+      setReferenceText((prev) => (prev ? prev + "\n\n---\n\n" + text : text));
+    }
     e.target.value = "";
   };
 
   const handleGenerate = async () => {
     if (!businessType.trim()) {
-      setError("업종명을 입력해주세요.");
+      setError("분야명을 입력해주세요.");
       return;
     }
 
@@ -62,6 +91,10 @@ export function BlogForm() {
           additionalNotes: additionalNotes || undefined,
           includeSection4,
           model,
+          section1Title: section1Title || undefined,
+          section2Title: section2Title || undefined,
+          section3Title: section3Title || undefined,
+          section4Title: section4Title || undefined,
         }),
       });
 
@@ -95,17 +128,21 @@ export function BlogForm() {
     setAdditionalNotes("");
     setIncludeSection4(false);
     setModel("claude-sonnet");
+    setSection1Title("");
+    setSection2Title("");
+    setSection3Title("");
+    setSection4Title("");
     setResult(null);
     setError("");
   };
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8">
-      {/* 업종명 */}
+      {/* 분야명 */}
       <section className="space-y-4">
-        <h2 className="text-base sm:text-lg font-bold text-gray-800">업종 정보</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">분야 정보</h2>
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">업종명 *</label>
+          <label className="text-sm font-medium text-gray-700">분야명 *</label>
           <input
             type="text"
             value={businessType}
@@ -113,7 +150,47 @@ export function BlogForm() {
             placeholder="예: 공장등록, 근로자파견업, 국제물류주선업"
             className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <p className="text-xs text-gray-500">인허가 글을 작성할 업종명을 입력하세요.</p>
+          <p className="text-xs text-gray-500">인허가 글을 작성할 분야명을 입력하세요.</p>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">본문 1 소제목 (선택)</label>
+          <input
+            type="text"
+            value={section1Title}
+            onChange={(e) => setSection1Title(e.target.value)}
+            placeholder="예: 공장등록이란"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">본문 2 소제목 (선택)</label>
+          <input
+            type="text"
+            value={section2Title}
+            onChange={(e) => setSection2Title(e.target.value)}
+            placeholder="예: 공장등록 요건"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">본문 3 소제목 (선택)</label>
+          <input
+            type="text"
+            value={section3Title}
+            onChange={(e) => setSection3Title(e.target.value)}
+            placeholder="예: 공장등록 제출서류"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700">본문 4 소제목 (선택)</label>
+          <input
+            type="text"
+            value={section4Title}
+            onChange={(e) => setSection4Title(e.target.value)}
+            placeholder="예: 공장등록 혜택 및 유의사항"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
       </section>
 
@@ -125,20 +202,22 @@ export function BlogForm() {
           <textarea
             value={referenceText}
             onChange={(e) => setReferenceText(e.target.value)}
-            placeholder={"해당 업종의 법률 조문, 등록 요건, 서류 목록 등 참고 자료를 붙여넣으세요.\n정확한 정보일수록 더 높은 품질의 글이 생성됩니다."}
+            placeholder={"해당 분야의 법률 조문, 등록 요건, 서류 목록 등 참고 자료를 붙여넣으세요.\n정확한 정보일수록 더 높은 품질의 글이 생성됩니다."}
             rows={6}
             className="border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">파일 첨부 (.txt, .md)</label>
+          <label className="text-sm font-medium text-gray-700">파일 첨부 (.txt, .md, .pdf)</label>
           <input
             type="file"
-            accept=".txt,.md,.text"
+            accept=".txt,.md,.text,.pdf"
             onChange={handleFileUpload}
-            className="text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+            disabled={pdfLoading}
+            className="text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 disabled:opacity-50"
           />
-          {referenceText && (
+          {pdfLoading && <p className="text-xs text-blue-600">PDF 파싱 중...</p>}
+          {!pdfLoading && referenceText && (
             <p className="text-xs text-blue-600">참고 자료 {referenceText.length.toLocaleString()}자 입력됨</p>
           )}
         </div>
@@ -191,6 +270,7 @@ export function BlogForm() {
             options={[
               { value: "claude-sonnet", label: "Claude Sonnet (추천)" },
               { value: "claude-haiku", label: "Claude Haiku (빠름)" },
+              { value: "gemini-flash", label: "Gemini 2.0 Flash" },
             ]}
           />
         </div>

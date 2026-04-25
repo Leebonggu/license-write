@@ -6,6 +6,10 @@ interface PromptInput {
   requiredPhrases?: string;
   additionalNotes?: string;
   includeSection4: boolean;
+  section1Title?: string;
+  section2Title?: string;
+  section3Title?: string;
+  section4Title?: string;
 }
 
 interface PromptOutput {
@@ -16,16 +20,26 @@ interface PromptOutput {
 export function buildPrompt(input: PromptInput): PromptOutput {
   const parts: string[] = [];
 
-  parts.push(`## 업종명\n${input.businessType}`);
+  parts.push(`## 분야명\n${input.businessType}`);
 
   if (input.includeSection4) {
-    parts.push(`## 본문 4 포함\n본문 4(추가 정보) 섹션을 반드시 포함해주세요. 해당 업종의 혜택, 관련 인증, 변경등록 절차 등 부가 정보를 다뤄주세요.`);
+    parts.push(`## 본문 4 포함\n본문 4(추가 정보) 섹션을 반드시 포함해주세요. 해당 분야의 혜택, 관련 인증, 변경등록 절차 등 부가 정보를 다뤄주세요.`);
   } else {
     parts.push(`## 본문 4\n본문 4(추가 정보) 섹션은 생략하세요. 인트로 → 본문1 → 본문2 → 본문3 → 엔딩 구조로 작성하세요.`);
   }
 
+  const sectionTitles: string[] = [];
+  if (input.section1Title) sectionTitles.push(`- 본문 1: ${input.section1Title}`);
+  if (input.section2Title) sectionTitles.push(`- 본문 2: ${input.section2Title}`);
+  if (input.section3Title) sectionTitles.push(`- 본문 3: ${input.section3Title}`);
+  if (input.includeSection4 && input.section4Title) sectionTitles.push(`- 본문 4: ${input.section4Title}`);
+
+  if (sectionTitles.length > 0) {
+    parts.push(`## 본문 소제목\n${sectionTitles.join("\n")}\n위 소제목을 각 섹션의 <h2> 태그에 그대로 사용하고, 블로그 제목에도 핵심 키워드로 반영하세요.`);
+  }
+
   if (input.referenceText) {
-    parts.push(`## 참고 자료\n아래는 이 업종에 대한 참고 자료입니다. 이 내용을 바탕으로 정확한 정보를 글에 반영하세요. 참고 자료의 문체가 아닌, 시스템 프롬프트에 명시된 인허가닷컴 문체를 따라야 합니다.\n\n---\n${input.referenceText}\n---`);
+    parts.push(`## 참고 자료\n아래는 이 분야에 대한 참고 자료입니다. 이 내용을 바탕으로 정확한 정보를 글에 반영하세요. 참고 자료의 문체가 아닌, 시스템 프롬프트에 명시된 청아한 문체를 따라야 합니다.\n\n---\n${input.referenceText}\n---`);
   }
 
   if (input.requiredPhrases) {

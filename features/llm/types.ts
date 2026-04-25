@@ -1,4 +1,4 @@
-export type LLMModel = "claude-sonnet" | "claude-haiku";
+export type LLMModel = "claude-sonnet" | "claude-haiku" | "gemini-flash";
 
 export interface LLMProvider {
   generateText(userPrompt: string, systemPrompt: string): Promise<string>;
@@ -6,4 +6,5 @@ export interface LLMProvider {
 
 export interface LLMKeys {
   anthropicApiKey?: string;
+  googleApiKey?: string;
 }

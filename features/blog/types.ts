@@ -7,6 +7,10 @@ export interface LicenseInput {
   additionalNotes?: string;
   includeSection4: boolean;
   model: LLMModel;
+  section1Title?: string;
+  section2Title?: string;
+  section3Title?: string;
+  section4Title?: string;
 }
 
 export interface LicenseOutput {

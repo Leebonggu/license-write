@@ -19,10 +19,10 @@ export default function GuidePage() {
           <section className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center gap-3 mb-4">
               <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
-              <h2 className="text-lg font-bold text-gray-900">업종명 입력</h2>
+              <h2 className="text-lg font-bold text-gray-900">분야명 입력</h2>
             </div>
             <p className="text-gray-600 mb-3">
-              생성할 인허가 업종명을 입력합니다. 블로그 글의 주제가 됩니다.
+              생성할 인허가 분야명을 입력합니다. 블로그 글의 주제가 됩니다.
             </p>
             <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm font-medium text-gray-500 mb-2">입력 예시</p>
@@ -41,7 +41,7 @@ export default function GuidePage() {
               <h2 className="text-lg font-bold text-gray-900">참고 자료 첨부 (선택)</h2>
             </div>
             <p className="text-gray-600 mb-3">
-              해당 업종의 법률 조문, 등록 요건, 서류 목록 등을 붙여넣으면 글의 정확도가 크게 올라갑니다.
+              해당 분야의 법률 조문, 등록 요건, 서류 목록 등을 붙여넣으면 글의 정확도가 크게 올라갑니다.
             </p>
             <div className="space-y-3">
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -54,7 +54,7 @@ export default function GuidePage() {
               </div>
             </div>
             <p className="text-sm text-gray-500 mt-3">
-              텍스트 직접 입력 또는 <strong>.txt, .md</strong> 파일 첨부 가능
+              텍스트 직접 입력 또는 <strong>.txt, .md, .pdf</strong> 파일 첨부 가능
             </p>
           </section>
 
@@ -87,7 +87,7 @@ export default function GuidePage() {
                   </tr>
                   <tr>
                     <td className="py-2.5 pr-4 font-medium">LLM 선택</td>
-                    <td className="py-2.5">Sonnet (고품질, 추천) / Haiku (빠름, 저비용)</td>
+                    <td className="py-2.5">Sonnet (고품질, 추천) / Haiku (빠름, 저비용) / Gemini Flash</td>
                   </tr>
                 </tbody>
               </table>
@@ -154,7 +154,7 @@ export default function GuidePage() {
             <h2 className="text-lg font-bold text-gray-900 mb-4">생성되는 글 구조</h2>
             <div className="space-y-2">
               {[
-                { label: "인트로", desc: "인사 + 업종 배경 + 안내 + CTA", color: "bg-blue-50 text-blue-800" },
+                { label: "인트로", desc: "인사 + 분야 배경 + 안내 + CTA", color: "bg-blue-50 text-blue-800" },
                 { label: "본문 1: ~이란", desc: "법적 정의 + 법률 인용 + 벌칙 안내", color: "bg-gray-50 text-gray-800" },
                 { label: "본문 2: ~ 요건", desc: "자본금, 인력, 시설, 결격사유 등 상세 요건", color: "bg-gray-50 text-gray-800" },
                 { label: "본문 3: ~ 서류", desc: "필수/추가 서류 목록 + 절차", color: "bg-gray-50 text-gray-800" },

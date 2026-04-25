@@ -20,6 +20,10 @@ export async function generateBlogPost(
     requiredPhrases: input.requiredPhrases,
     additionalNotes: input.additionalNotes,
     includeSection4: input.includeSection4,
+    section1Title: input.section1Title,
+    section2Title: input.section2Title,
+    section3Title: input.section3Title,
+    section4Title: input.section4Title,
   });
 
   const raw = await provider.generateText(userPrompt, systemPrompt);
