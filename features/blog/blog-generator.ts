@@ -30,7 +30,16 @@ export async function generateBlogPost(
 
   const titleMatch = raw.match(/\[TITLE\](.*?)\[\/TITLE\]/);
   const title = titleMatch ? titleMatch[1].trim() : `${input.businessType} 등록 요건 및 제출서류 안내`;
-  const html = raw.replace(/\[TITLE\].*?\[\/TITLE\]\s*/, "").trim();
+
+  const tagsMatch = raw.match(/\[TAGS\]([\s\S]*?)\[\/TAGS\]/);
+  const hashtags = tagsMatch
+    ? tagsMatch[1].trim().split(/\s+/).filter((t) => t.startsWith("#"))
+    : [];
+
+  const html = raw
+    .replace(/\[TITLE\].*?\[\/TITLE\]\s*/, "")
+    .replace(/\[TAGS\][\s\S]*?\[\/TAGS\]/, "")
+    .trim();
   const plainText = htmlToPlainText(html);
 
   return {
@@ -38,5 +47,6 @@ export async function generateBlogPost(
     html,
     plainText,
     charCount: plainText.length,
+    hashtags,
   };
 }

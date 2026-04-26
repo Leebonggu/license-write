@@ -18,4 +18,5 @@ export interface LicenseOutput {
   html: string;
   plainText: string;
   charCount: number;
+  hashtags: string[];
 }
